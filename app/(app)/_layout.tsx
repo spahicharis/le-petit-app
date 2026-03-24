@@ -1,6 +1,7 @@
 import { Stack, useRouter, type Href } from 'expo-router';
 import { useEffect } from 'react';
 import { useAuthStore } from '@/store/authStore';
+import { GradientHeader } from '@/components/ui/GradientHeader';
 
 export const unstable_settings = {
   initialRouteName: '(tabs)',
@@ -17,8 +18,12 @@ export default function AppLayout() {
   }, [hasSession, router]);
 
   return (
-    <Stack screenOptions={{ headerShown: false }}>
-      <Stack.Screen name="(tabs)" />
+    <Stack
+      screenOptions={{
+        headerShown: false,
+        header: (props) => <GradientHeader {...props} />,
+      }}>
+      <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
       <Stack.Screen
         name="tales/tales"
         options={{ headerShown: true, title: 'Tales', headerBackTitle: 'Home' }}
@@ -42,4 +47,3 @@ export default function AppLayout() {
     </Stack>
   );
 }
-
