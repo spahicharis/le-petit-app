@@ -14,6 +14,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { getStoryById } from '@/constants/data';
 import { colors, spacing, fontSize, fontWeight, radius } from '@/constants/theme';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
+import { AudioPlayer } from '@/components/ui/AudioPlayer';
 
 export default function StoryDetailScreen() {
   const navigation = useNavigation();
@@ -131,22 +132,25 @@ export default function StoryDetailScreen() {
             </View>
           )}
 
-          {/* Audio / Video placeholders */}
-          {(story.audioUrl ?? story.videoUrl) && (
+          {/* Audio player */}
+          {story.audioUrl && (
+            <View style={styles.section}>
+              <AudioPlayer
+                audioUrl={story.audioUrl}
+                title={story.title}
+                narrator={story.narrator}
+              />
+            </View>
+          )}
+
+          {/* Video placeholder */}
+          {story.videoUrl && (
             <View style={styles.section}>
               <Text style={styles.sectionLabel}>Media</Text>
-              {story.audioUrl && (
-                <View style={styles.mediaChip}>
-                  <FontAwesome name="headphones" size={18} color={colors.accent} />
-                  <Text style={styles.mediaText}>Audio available</Text>
-                </View>
-              )}
-              {story.videoUrl && (
-                <View style={styles.mediaChip}>
-                  <FontAwesome name="play-circle" size={18} color={colors.secondary} />
-                  <Text style={styles.mediaText}>Video available</Text>
-                </View>
-              )}
+              <View style={styles.mediaChip}>
+                <FontAwesome name="play-circle" size={18} color={colors.secondary} />
+                <Text style={styles.mediaText}>Video available</Text>
+              </View>
             </View>
           )}
         </View>
