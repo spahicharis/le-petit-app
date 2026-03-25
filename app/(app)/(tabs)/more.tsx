@@ -16,6 +16,7 @@ import Constants from 'expo-constants';
 import { useAuthStore } from '@/store/authStore';
 import { colors, fontSize, fontWeight, radius, spacing } from '@/constants/theme';
 import { LanguageSwitcher } from '@/components/ui/LanguageSwitcher';
+import { CUSTOM_TAB_BAR_HEIGHT } from '@/components/ui/CustomTabBar';
 
 // ─── types ────────────────────────────────────────────────────────────────────
 
@@ -305,7 +306,7 @@ const styles = StyleSheet.create({
   },
   scroll: {
     paddingHorizontal: spacing.lg,
-    paddingBottom: spacing.xxl,
+    paddingBottom: CUSTOM_TAB_BAR_HEIGHT + spacing.lg,
   },
   header: {
     flexDirection: 'row',

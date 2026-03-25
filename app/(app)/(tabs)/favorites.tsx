@@ -5,6 +5,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { useTranslation } from 'react-i18next';
 import { stories } from '@/constants/data';
 import { colors, spacing, fontSize, fontWeight, radius } from '@/constants/theme';
+import { CUSTOM_TAB_BAR_HEIGHT } from '@/components/ui/CustomTabBar';
 import type { Story } from '@/constants/data';
 
 export default function FavouritesTab() {
@@ -79,7 +80,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     lineHeight: 22,
   },
-  list: { padding: spacing.lg, gap: spacing.sm },
+  list: { padding: spacing.lg, gap: spacing.sm, paddingBottom: CUSTOM_TAB_BAR_HEIGHT + spacing.lg },
   card: {
     flexDirection: 'row',
     backgroundColor: colors.surface,

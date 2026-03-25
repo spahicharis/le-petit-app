@@ -10,7 +10,6 @@ import React, { useEffect, useRef } from 'react';
 import {
   Animated,
   Image,
-  Platform,
   Pressable,
   StyleSheet,
   Text,
@@ -23,10 +22,10 @@ import { LinearGradient } from 'expo-linear-gradient';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import { useTranslation } from 'react-i18next';
 import { useAudioStore } from '@/store/audioStore';
+import { CUSTOM_TAB_BAR_HEIGHT } from '@/components/ui/CustomTabBar';
 import { colors, fontSize, fontWeight, radius, spacing } from '@/constants/theme';
 
 // Standard React Navigation tab bar height (without safe area).
-const TAB_BAR_HEIGHT = Platform.OS === 'android' ? 56 : 49;
 const MINI_PLAYER_HEIGHT = 68;
 
 export function MiniPlayer() {
@@ -66,7 +65,7 @@ export function MiniPlayer() {
   // ── bottom offset ─────────────────────────────────────────────────────────
 
   const bottomOffset = isOnTabScreen
-    ? TAB_BAR_HEIGHT + insets.bottom
+    ? CUSTOM_TAB_BAR_HEIGHT + insets.bottom + spacing.sm
     : insets.bottom + spacing.sm;
 
   // ── progress ──────────────────────────────────────────────────────────────

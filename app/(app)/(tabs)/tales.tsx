@@ -13,6 +13,7 @@ import { useTranslation } from 'react-i18next';
 import { useAuthStore } from '@/store/authStore';
 import { colors, spacing, fontSize, fontWeight, radius } from '@/constants/theme';
 import { LanguageSwitcher } from '@/components/ui/LanguageSwitcher';
+import { CUSTOM_TAB_BAR_HEIGHT } from '@/components/ui/CustomTabBar';
 
 interface SectionCardProps {
   emoji: string;
@@ -39,7 +40,7 @@ function SectionCard({ emoji, title, description, accentColor, onPress }: Sectio
 
 export default function HomeTab() {
   const router = useRouter();
-  const { userName, isLoggedIn, logout } = useAuthStore();
+  const { userName, isLoggedIn } = useAuthStore();
   const { t } = useTranslation();
 
   return (
@@ -98,7 +99,7 @@ const styles = StyleSheet.create({
   },
   scrollContent: {
     paddingHorizontal: spacing.lg,
-    paddingBottom: spacing.xxl,
+    paddingBottom: CUSTOM_TAB_BAR_HEIGHT + spacing.lg,
   },
   header: {
     flexDirection: 'row',
