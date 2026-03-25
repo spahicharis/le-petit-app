@@ -7,6 +7,7 @@ const bs: Translation = {
     notifications: 'Obavještenja',
     search: 'Pretraga',
     favourites: 'Omiljene',
+    more: 'Više',
   },
 
   // ── welcome ───────────────────────────────────────────────────────────────
@@ -150,6 +151,34 @@ const bs: Translation = {
     title: 'Moj logoped',
     comingSoon: 'Uskoro',
     body: 'Personalizovane govorne i jezičke vježbe, praćenje napretka i smjernice logopeda bit će dostupni u budućem ažuriranju.',
+  },
+
+  // ── more ──────────────────────────────────────────────────────────────────
+  more: {
+    title: 'Više',
+    guest: 'Gost',
+    guestSubtitle: 'Niste prijavljeni',
+    signedInAs: 'Prijavljeni kao',
+    sectionAccount: 'Račun',
+    sectionPremium: 'Premium',
+    sectionSupport: 'Podrška',
+    sectionInfo: 'Info',
+    signIn: 'Prijavi se',
+    signInSubtitle: 'Sačuvajte omiljene i otključajte sve priče',
+    signOut: 'Odjavi se',
+    subscription: 'Pretplata',
+    subscriptionBadgeFree: 'Besplatno',
+    subscriptionBadgePremium: 'Premium',
+    subscriptionSoon: 'Upravljanje pretplatom uskoro.',
+    updateContent: 'Ažuriraj sadržaj',
+    updateContentDone: 'Sadržaj je ažuriran! ✓',
+    feedback: 'Pošalji povratne informacije',
+    reportBug: 'Prijavi grešku',
+    about: 'O LePetit.app',
+    aboutMessage: 'LePetit.app — Verzija {{version}}\n\nČarobna aplikacija za pripovijedanje za male sanjare. 📖✨',
+    version: 'Verzija {{version}}',
+    privacyPolicy: 'Politika privatnosti',
+    privacySoon: 'Politika privatnosti bit će dostupna uskoro.',
   },
 };
 

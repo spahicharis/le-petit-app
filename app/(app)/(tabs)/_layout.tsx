@@ -57,6 +57,13 @@ export default function TabsLayout() {
           tabBarIcon: ({ color }) => <TabIcon name="heart" color={color} />,
         }}
       />
+      <Tabs.Screen
+        name="more"
+        options={{
+          title: t('tabs.more'),
+          tabBarIcon: ({ color }) => <TabIcon name="ellipsis-h" color={color} />,
+        }}
+      />
     </Tabs>
   );
 }

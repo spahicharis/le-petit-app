@@ -5,6 +5,7 @@ const en = {
     notifications: 'Notifications',
     search: 'Search',
     favourites: 'Favourites',
+    more: 'More',
   },
 
   // ── welcome ───────────────────────────────────────────────────────────────
@@ -148,6 +149,37 @@ const en = {
     title: 'My Logoped',
     comingSoon: 'Coming soon',
     body: 'Personalised speech and language exercises, progress tracking, and guidance from speech therapists will be available in a future update.',
+  },
+
+  // ── more ──────────────────────────────────────────────────────────────────
+  more: {
+    title: 'More',
+    // profile card
+    guest: 'Guest',
+    guestSubtitle: 'Not signed in',
+    signedInAs: 'Signed in as',
+    // sections
+    sectionAccount: 'Account',
+    sectionPremium: 'Premium',
+    sectionSupport: 'Support',
+    sectionInfo: 'Info',
+    // items
+    signIn: 'Sign In',
+    signInSubtitle: 'Save favourites & unlock all stories',
+    signOut: 'Sign Out',
+    subscription: 'Subscription',
+    subscriptionBadgeFree: 'Free',
+    subscriptionBadgePremium: 'Premium',
+    subscriptionSoon: 'Subscription management coming soon.',
+    updateContent: 'Update Content',
+    updateContentDone: 'Content is up to date! ✓',
+    feedback: 'Send Feedback',
+    reportBug: 'Report a Bug',
+    about: 'About LePetit.app',
+    aboutMessage: 'LePetit.app — Version {{version}}\n\nA magical storytelling app crafted for little dreamers. 📖✨',
+    version: 'Version {{version}}',
+    privacyPolicy: 'Privacy Policy',
+    privacySoon: 'Privacy policy will be available soon.',
   },
 } as const;
 
