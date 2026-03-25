@@ -42,7 +42,7 @@ export default function ParentsScreen() {
       <ScrollView contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>
         <View style={styles.intro}>
           <Text style={styles.introEmoji}>👨‍👩‍👧</Text>
-          <Text style={styles.introTitle}>For Parents</Text>
+          {/*<Text style={styles.introTitle}>For Parents</Text>*/}
           <Text style={styles.introSub}>
             Answers to common questions about LePetit.app and how it works.
           </Text>

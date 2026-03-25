@@ -15,13 +15,19 @@ import { colors, fontSize, fontWeight, spacing } from '@/constants/theme';
 
 /** Gradient colours – warm amber → coral, matching the app palette */
 export const HEADER_GRADIENT: [string, string, ...string[]] = [
-  'rgba(255,154,92,0.49)',
   '#aca29c',
-  '#f6f5f5',
+  'rgba(255,154,92,0.49)',
+  'rgba(255,154,92,0.49)',
+  // colors.background,
+  // colors.background,
+  // colors.background,
+  // 'transparent',
+  // 'transparent',
+  // 'transparent',
 ];
 
 /** Bottom-fade colours – amber → transparent, for the soft dissolve beneath the header */
-const BOTTOM_FADE: [string, string] = ['rgba(249, 168, 37, 0.45)', 'transparent'];
+const BOTTOM_FADE: [string, string] = ['rgba(249, 168, 37, 0.25)', 'transparent'];
 
 export function GradientHeader({ options, navigation, route }: NativeStackHeaderProps) {
   const router = useRouter();

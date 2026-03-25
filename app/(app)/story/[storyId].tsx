@@ -135,11 +135,7 @@ export default function StoryDetailScreen() {
           {/* Audio player */}
           {story.audioUrl && (
             <View style={styles.section}>
-              <AudioPlayer
-                audioUrl={story.audioUrl}
-                title={story.title}
-                narrator={story.narrator}
-              />
+              <AudioPlayer story={story} />
             </View>
           )}
 

@@ -1,7 +1,9 @@
 import { Stack, useRouter, type Href } from 'expo-router';
 import { useEffect } from 'react';
+import { View } from 'react-native';
 import { useAuthStore } from '@/store/authStore';
 import { GradientHeader } from '@/components/ui/GradientHeader';
+import { MiniPlayer } from '@/components/ui/MiniPlayer';
 
 export const unstable_settings = {
   initialRouteName: '(tabs)',
@@ -18,32 +20,37 @@ export default function AppLayout() {
   }, [hasSession, router]);
 
   return (
-    <Stack
-      screenOptions={{
-        headerShown: false,
-        header: (props) => <GradientHeader {...props} />,
-      }}>
-      <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-      <Stack.Screen
-        name="tales/tales"
-        options={{ headerShown: true, title: 'Tales', headerBackTitle: 'Home' }}
-      />
-      <Stack.Screen
-        name="tales/[subcategory]"
-        options={{ headerShown: true, headerBackTitle: 'Tales' }}
-      />
-      <Stack.Screen
-        name="story/[storyId]"
-        options={{ headerShown: true, headerBackTitle: 'Back' }}
-      />
-      <Stack.Screen
-        name="parents"
-        options={{ headerShown: true, title: 'For Parents', headerBackTitle: 'Home' }}
-      />
-      <Stack.Screen
-        name="my-logoped"
-        options={{ headerShown: true, title: 'My Logoped', headerBackTitle: 'Home' }}
-      />
-    </Stack>
+    <View style={{ flex: 1 }}>
+      <Stack
+        screenOptions={{
+          headerShown: false,
+          header: (props) => <GradientHeader {...props} />,
+        }}>
+        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+        <Stack.Screen
+          name="tales/tales"
+          options={{ headerShown: true, title: 'Tales', headerBackTitle: 'Home' }}
+        />
+        <Stack.Screen
+          name="tales/[subcategory]"
+          options={{ headerShown: true, headerBackTitle: 'Tales' }}
+        />
+        <Stack.Screen
+          name="story/[storyId]"
+          options={{ headerShown: true, headerBackTitle: 'Back' }}
+        />
+        <Stack.Screen
+          name="parents"
+          options={{ headerShown: false, title: 'For Parents', headerBackTitle: 'Home' }}
+        />
+        <Stack.Screen
+          name="my-logoped/index"
+          options={{ headerShown: true, title: 'My Logoped', headerBackTitle: 'Home' }}
+        />
+      </Stack>
+
+      {/* Persistent mini player – floats above tab bar while navigating */}
+      <MiniPlayer />
+    </View>
   );
 }

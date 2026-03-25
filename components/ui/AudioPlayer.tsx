@@ -1,8 +1,9 @@
 /**
  * AudioPlayer – a kids-friendly audio player for tale narration.
- * Uses expo-av for playback.
+ * Playback state lives in the global useAudioStore; this component is purely
+ * a presentational controller for the current story.
  */
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef } from 'react';
 import {
   ActivityIndicator,
   Animated,
@@ -13,10 +14,11 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import { Audio, AVPlaybackStatus, InterruptionModeIOS, InterruptionModeAndroid } from 'expo-av';
 import { LinearGradient } from 'expo-linear-gradient';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import { colors, fontSize, fontWeight, radius, spacing } from '@/constants/theme';
+import { useAudioStore } from '@/store/audioStore';
+import type { Story } from '@/constants/data';
 
 // ─── helpers ────────────────────────────────────────────────────────────────
 
@@ -27,52 +29,43 @@ function formatTime(ms: number): string {
   return `${m}:${s.toString().padStart(2, '0')}`;
 }
 
-// ─── types ───────────────────────────────────────────────────────────────────
-
-interface AudioPlayerProps {
-  audioUrl: string;
-  title?: string;
-  narrator?: string | null;
-}
-
 // ─── component ───────────────────────────────────────────────────────────────
 
-export function AudioPlayer({ audioUrl, title, narrator }: AudioPlayerProps) {
-  const soundRef = useRef<Audio.Sound | null>(null);
+interface AudioPlayerProps {
+  story: Story;
+}
 
-  const [isLoaded, setIsLoaded] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
-  const [isPlaying, setIsPlaying] = useState(false);
-  const [positionMs, setPositionMs] = useState(0);
-  const [durationMs, setDurationMs] = useState(0);
-  const [isSeeking, setIsSeeking] = useState(false);
-  const [seekPercent, setSeekPercent] = useState(0);
-  const [error, setError] = useState<string | null>(null);
+export function AudioPlayer({ story }: AudioPlayerProps) {
+  const { currentStory, isLoaded, isLoading, isPlaying, positionMs, durationMs, error, play, togglePlayPause, seek } =
+    useAudioStore();
 
-  // Pulse animation for the play button while playing
+  /** True only when THIS story is the active one in the global store. */
+  const isThisStory = currentStory?.id === story.id;
+
+  const effectiveIsPlaying = isThisStory && isPlaying;
+  const effectiveIsLoading = isThisStory && isLoading;
+  const effectiveIsLoaded = isThisStory && isLoaded;
+  const effectivePosition = isThisStory ? positionMs : 0;
+  const effectiveDuration = isThisStory ? durationMs : 0;
+  const effectiveError = isThisStory ? error : null;
+
+  // ── local seek state (only used while dragging) ──────────────────────────
+  const isSeeking = useRef(false);
+  const seekPct = useRef(0);
+  const [seekDisplay, setSeekDisplay] = React.useState<number | null>(null);
+
+  // ── animations ────────────────────────────────────────────────────────────
   const pulseAnim = useRef(new Animated.Value(1)).current;
   const pulseLoop = useRef<Animated.CompositeAnimation | null>(null);
-
-  // Note-bounce animations (decorative notes around the player)
-  const note1Anim = useRef(new Animated.Value(0)).current;
-  const note2Anim = useRef(new Animated.Value(0)).current;
-  const note3Anim = useRef(new Animated.Value(0)).current;
+  const note1 = useRef(new Animated.Value(0)).current;
+  const note2 = useRef(new Animated.Value(0)).current;
+  const note3 = useRef(new Animated.Value(0)).current;
 
   const startPulse = useCallback(() => {
     pulseLoop.current = Animated.loop(
       Animated.sequence([
-        Animated.timing(pulseAnim, {
-          toValue: 1.08,
-          duration: 600,
-          easing: Easing.inOut(Easing.ease),
-          useNativeDriver: true,
-        }),
-        Animated.timing(pulseAnim, {
-          toValue: 1,
-          duration: 600,
-          easing: Easing.inOut(Easing.ease),
-          useNativeDriver: true,
-        }),
+        Animated.timing(pulseAnim, { toValue: 1.08, duration: 600, easing: Easing.inOut(Easing.ease), useNativeDriver: true }),
+        Animated.timing(pulseAnim, { toValue: 1,    duration: 600, easing: Easing.inOut(Easing.ease), useNativeDriver: true }),
       ]),
     );
     pulseLoop.current.start();
@@ -88,123 +81,37 @@ export function AudioPlayer({ audioUrl, title, narrator }: AudioPlayerProps) {
       Animated.loop(
         Animated.sequence([
           Animated.delay(delay),
-          Animated.timing(anim, {
-            toValue: 1,
-            duration: 900,
-            easing: Easing.out(Easing.ease),
-            useNativeDriver: true,
-          }),
-          Animated.timing(anim, {
-            toValue: 0,
-            duration: 400,
-            useNativeDriver: true,
-          }),
+          Animated.timing(anim, { toValue: 1, duration: 900, easing: Easing.out(Easing.ease), useNativeDriver: true }),
+          Animated.timing(anim, { toValue: 0, duration: 400, useNativeDriver: true }),
         ]),
       );
-    makeNote(note1Anim, 0).start();
-    makeNote(note2Anim, 300).start();
-    makeNote(note3Anim, 600).start();
-  }, [note1Anim, note2Anim, note3Anim]);
+    makeNote(note1, 0).start();
+    makeNote(note2, 300).start();
+    makeNote(note3, 600).start();
+  }, [note1, note2, note3]);
 
   const stopNotes = useCallback(() => {
-    note1Anim.stopAnimation(() => note1Anim.setValue(0));
-    note2Anim.stopAnimation(() => note2Anim.setValue(0));
-    note3Anim.stopAnimation(() => note3Anim.setValue(0));
-  }, [note1Anim, note2Anim, note3Anim]);
-
-  // ── load / unload ──────────────────────────────────────────────────────────
+    note1.stopAnimation(() => note1.setValue(0));
+    note2.stopAnimation(() => note2.setValue(0));
+    note3.stopAnimation(() => note3.setValue(0));
+  }, [note1, note2, note3]);
 
   useEffect(() => {
-    Audio.setAudioModeAsync({
-      playsInSilentModeIOS: true,
-      staysActiveInBackground: true,
-      interruptionModeIOS: InterruptionModeIOS.DuckOthers,
-      interruptionModeAndroid: InterruptionModeAndroid.DuckOthers,
-      shouldDuckAndroid: true,
-      playThroughEarpieceAndroid: false,
-    }).catch(() => {});
+    if (effectiveIsPlaying) { startPulse(); startNotes(); }
+    else { stopPulse(); stopNotes(); }
+  }, [effectiveIsPlaying, startPulse, startNotes, stopPulse, stopNotes]);
 
-    return () => {
-      soundRef.current?.unloadAsync().catch(() => {});
-    };
-  }, []);
-
-  // Unload old sound when URL changes
-  useEffect(() => {
-    setIsLoaded(false);
-    setIsPlaying(false);
-    setPositionMs(0);
-    setDurationMs(0);
-    setError(null);
-    stopPulse();
-    stopNotes();
-    soundRef.current?.unloadAsync().catch(() => {});
-    soundRef.current = null;
-  }, [audioUrl, stopPulse, stopNotes]);
-
-  const loadSound = useCallback(async () => {
-    if (isLoaded || isLoading) return;
-    setIsLoading(true);
-    setError(null);
-    try {
-      const { sound } = await Audio.Sound.createAsync(
-        { uri: audioUrl },
-        { shouldPlay: false },
-        (status: AVPlaybackStatus) => {
-          if (!status.isLoaded) return;
-          setPositionMs(status.positionMillis);
-          setDurationMs(status.durationMillis ?? 0);
-          setIsPlaying(status.isPlaying);
-          if (status.didJustFinish) {
-            setIsPlaying(false);
-            setPositionMs(0);
-          }
-        },
-      );
-      soundRef.current = sound;
-      setIsLoaded(true);
-    } catch {
-      setError('Could not load audio. Please check your connection.');
-    } finally {
-      setIsLoading(false);
-    }
-  }, [audioUrl, isLoaded, isLoading]);
-
-  // ── playback controls ──────────────────────────────────────────────────────
+  // ── controls ──────────────────────────────────────────────────────────────
 
   const handlePlayPause = useCallback(async () => {
-    if (!isLoaded) {
-      await loadSound();
-      // After loading, start playback
-      if (soundRef.current) {
-        await soundRef.current.playAsync();
-      }
-      return;
-    }
-    const sound = soundRef.current;
-    if (!sound) return;
-    if (isPlaying) {
-      await sound.pauseAsync();
-      stopPulse();
-      stopNotes();
+    if (!isThisStory || (!isLoaded && !isLoading)) {
+      await play(story);
     } else {
-      await sound.playAsync();
-      startPulse();
-      startNotes();
+      await togglePlayPause();
     }
-  }, [isLoaded, isPlaying, loadSound, startPulse, startNotes, stopPulse, stopNotes]);
+  }, [isThisStory, isLoaded, isLoading, play, story, togglePlayPause]);
 
-  useEffect(() => {
-    if (isPlaying) {
-      startPulse();
-      startNotes();
-    } else {
-      stopPulse();
-      stopNotes();
-    }
-  }, [isPlaying, startPulse, startNotes, stopPulse, stopNotes]);
-
-  // ── seek bar ───────────────────────────────────────────────────────────────
+  // ── seek bar ──────────────────────────────────────────────────────────────
 
   const trackWidth = useRef(0);
 
@@ -213,57 +120,49 @@ export function AudioPlayer({ audioUrl, title, narrator }: AudioPlayerProps) {
       onStartShouldSetPanResponder: () => true,
       onMoveShouldSetPanResponder: () => true,
       onPanResponderGrant: (evt) => {
-        setIsSeeking(true);
+        isSeeking.current = true;
         const pct = Math.max(0, Math.min(1, evt.nativeEvent.locationX / (trackWidth.current || 1)));
-        setSeekPercent(pct);
+        seekPct.current = pct;
+        setSeekDisplay(pct);
       },
       onPanResponderMove: (evt) => {
         const pct = Math.max(0, Math.min(1, evt.nativeEvent.locationX / (trackWidth.current || 1)));
-        setSeekPercent(pct);
+        seekPct.current = pct;
+        setSeekDisplay(pct);
       },
       onPanResponderRelease: async (evt) => {
         const pct = Math.max(0, Math.min(1, evt.nativeEvent.locationX / (trackWidth.current || 1)));
-        setSeekPercent(pct);
-        setIsSeeking(false);
-        if (soundRef.current && durationMs > 0) {
-          await soundRef.current.setPositionAsync(Math.floor(pct * durationMs));
+        seekPct.current = pct;
+        isSeeking.current = false;
+        setSeekDisplay(null);
+        if (effectiveDuration > 0) {
+          await seek(pct * effectiveDuration);
         }
       },
     }),
   ).current;
 
-  const displayPercent = isSeeking
-    ? seekPercent
-    : durationMs > 0
-      ? positionMs / durationMs
-      : 0;
+  const displayPct =
+    seekDisplay !== null
+      ? seekDisplay
+      : effectiveDuration > 0
+        ? effectivePosition / effectiveDuration
+        : 0;
 
-  const displayPosition = isSeeking ? seekPercent * durationMs : positionMs;
+  const displayPosition = seekDisplay !== null ? seekDisplay * effectiveDuration : effectivePosition;
 
-  // ── note animation helpers ─────────────────────────────────────────────────
+  // ── note helper ───────────────────────────────────────────────────────────
 
   const noteStyle = (anim: Animated.Value, offsetX: number) => ({
     opacity: anim,
     transform: [
-      {
-        translateY: anim.interpolate({
-          inputRange: [0, 1],
-          outputRange: [0, -22],
-        }),
-      },
-      {
-        translateX: offsetX,
-      },
-      {
-        scale: anim.interpolate({
-          inputRange: [0, 0.5, 1],
-          outputRange: [0.6, 1.1, 0.8],
-        }),
-      },
+      { translateY: anim.interpolate({ inputRange: [0, 1], outputRange: [0, -22] }) },
+      { translateX: offsetX },
+      { scale: anim.interpolate({ inputRange: [0, 0.5, 1], outputRange: [0.6, 1.1, 0.8] }) },
     ],
   });
 
-  // ── render ─────────────────────────────────────────────────────────────────
+  // ── render ────────────────────────────────────────────────────────────────
 
   return (
     <LinearGradient
@@ -274,85 +173,72 @@ export function AudioPlayer({ audioUrl, title, narrator }: AudioPlayerProps) {
 
       {/* Floating musical notes */}
       <View style={styles.notesContainer} pointerEvents="none">
-        <Animated.Text style={[styles.noteEmoji, noteStyle(note1Anim, -8)]}>🎵</Animated.Text>
-        <Animated.Text style={[styles.noteEmoji, noteStyle(note2Anim, 4)]}>🎶</Animated.Text>
-        <Animated.Text style={[styles.noteEmoji, noteStyle(note3Anim, -2)]}>🎵</Animated.Text>
+        <Animated.Text style={[styles.noteEmoji, noteStyle(note1, -8)]}>🎵</Animated.Text>
+        <Animated.Text style={[styles.noteEmoji, noteStyle(note2, 4)]}>🎶</Animated.Text>
+        <Animated.Text style={[styles.noteEmoji, noteStyle(note3, -2)]}>🎵</Animated.Text>
       </View>
 
-      {/* Header row */}
+      {/* Header */}
       <View style={styles.headerRow}>
         <Text style={styles.listenLabel}>🎧 Listen to the story</Text>
       </View>
 
-      {narrator || title ? (
+      {(story.narrator || story.title) ? (
         <Text style={styles.narratorText} numberOfLines={1}>
-          {narrator ? `Narrated by ${narrator}` : title}
+          {story.narrator ? `Narrated by ${story.narrator}` : story.title}
         </Text>
       ) : null}
 
-      {/* Error */}
-      {error && <Text style={styles.errorText}>{error}</Text>}
+      {effectiveError && <Text style={styles.errorText}>{effectiveError}</Text>}
 
-      {/* Controls row */}
+      {/* Controls */}
       <View style={styles.controlsRow}>
-        {/* Time: current */}
         <Text style={styles.timeText}>{formatTime(displayPosition)}</Text>
 
-        {/* Play / Pause button */}
         <Animated.View style={{ transform: [{ scale: pulseAnim }] }}>
           <TouchableOpacity
             style={styles.playBtn}
             onPress={handlePlayPause}
             activeOpacity={0.8}
-            disabled={isLoading}>
+            disabled={effectiveIsLoading}>
             <LinearGradient
-              colors={isPlaying ? ['#FF8A65', '#FF6B6B'] : ['#F9A825', '#F57F17']}
+              colors={effectiveIsPlaying ? ['#FF8A65', '#FF6B6B'] : ['#F9A825', '#F57F17']}
               style={styles.playBtnGradient}>
-              {isLoading ? (
+              {effectiveIsLoading ? (
                 <ActivityIndicator color="#fff" size="small" />
               ) : (
                 <FontAwesome
-                  name={isPlaying ? 'pause' : 'play'}
+                  name={effectiveIsPlaying ? 'pause' : 'play'}
                   size={22}
                   color="#fff"
-                  style={isPlaying ? undefined : styles.playIcon}
+                  style={effectiveIsPlaying ? undefined : styles.playIcon}
                 />
               )}
             </LinearGradient>
           </TouchableOpacity>
         </Animated.View>
 
-        {/* Time: total */}
-        <Text style={styles.timeText}>{formatTime(durationMs)}</Text>
+        <Text style={styles.timeText}>{formatTime(effectiveDuration)}</Text>
       </View>
 
-      {/* Seek / progress bar */}
+      {/* Seek bar */}
       <View
         style={styles.trackContainer}
         {...panResponder.panHandlers}
-        onLayout={(e) => {
-          trackWidth.current = e.nativeEvent.layout.width;
-        }}>
-        {/* Track background */}
+        onLayout={(e) => { trackWidth.current = e.nativeEvent.layout.width; }}>
         <View style={styles.track}>
-          {/* Filled portion */}
-          <View style={[styles.trackFill, { flex: displayPercent }]} />
-          {/* Remaining portion */}
-          <View style={[styles.trackRemaining, { flex: 1 - displayPercent }]} />
+          <View style={[styles.trackFill, { flex: displayPct }]} />
+          <View style={[styles.trackRemaining, { flex: 1 - displayPct }]} />
         </View>
-        {/* Thumb */}
         <View
           style={[
             styles.thumb,
-            {
-              left: `${(displayPercent * 100).toFixed(1)}%` as unknown as number,
-            },
+            { left: `${(displayPct * 100).toFixed(1)}%` as unknown as number },
           ]}
         />
       </View>
 
-      {/* Hint text */}
-      {!isLoaded && !isLoading && !error && (
+      {!effectiveIsLoaded && !effectiveIsLoading && !effectiveError && (
         <Text style={styles.hintText}>Tap ▶ to start listening</Text>
       )}
     </LinearGradient>
@@ -383,13 +269,8 @@ const styles = StyleSheet.create({
     height: 40,
     alignItems: 'flex-end',
   },
-  noteEmoji: {
-    fontSize: 18,
-  },
-  headerRow: {
-    alignItems: 'center',
-    marginBottom: spacing.xs,
-  },
+  noteEmoji: { fontSize: 18 },
+  headerRow: { alignItems: 'center', marginBottom: spacing.xs },
   listenLabel: {
     fontSize: fontSize.lg,
     fontWeight: fontWeight.bold,
@@ -439,9 +320,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  playIcon: {
-    marginLeft: 4, // optical centering for play triangle
-  },
+  playIcon: { marginLeft: 4 },
   trackContainer: {
     height: THUMB_SIZE + 8,
     justifyContent: 'center',
@@ -454,14 +333,8 @@ const styles = StyleSheet.create({
     borderRadius: 3,
     overflow: 'hidden',
   },
-  trackFill: {
-    backgroundColor: colors.primary,
-    borderRadius: 3,
-  },
-  trackRemaining: {
-    backgroundColor: colors.border,
-    borderRadius: 3,
-  },
+  trackFill: { backgroundColor: colors.primary, borderRadius: 3 },
+  trackRemaining: { backgroundColor: colors.border, borderRadius: 3 },
   thumb: {
     position: 'absolute',
     width: THUMB_SIZE,
