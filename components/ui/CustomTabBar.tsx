@@ -11,7 +11,6 @@ import {
   Animated,
   Easing,
   StyleSheet,
-  Text,
   TouchableOpacity,
   View,
 } from 'react-native';
@@ -161,7 +160,7 @@ function TabItem({ label, inactiveIcon, activeIcon, gradient, isFocused, onPress
         <FontAwesome
           name={isFocused ? activeIcon : inactiveIcon}
           size={22}
-          color={isFocused ? '#fff' : accentColor + 'AA'}
+          color={isFocused ? '#fff' : accentColor + 'BB'}
         />
       </Animated.View>
 
@@ -199,7 +198,7 @@ const styles = StyleSheet.create({
   },
   bar: {
     flexDirection: 'row',
-    backgroundColor: '#FFFFFF',
+    backgroundColor: colors.surface,
     borderRadius: radius.xl,
     height: CUSTOM_TAB_BAR_HEIGHT,
     alignItems: 'center',

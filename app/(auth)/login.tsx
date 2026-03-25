@@ -23,7 +23,7 @@ export default function LoginScreen() {
 
   return (
     <SafeAreaView style={styles.container}>
-      <StatusBar barStyle="dark-content" backgroundColor={colors.background} />
+      <StatusBar barStyle="light-content" backgroundColor={colors.background} />
 
       {/* Back */}
       <TouchableOpacity style={styles.backBtn} onPress={() => router.back()}>
@@ -110,8 +110,8 @@ const styles = StyleSheet.create({
     borderWidth: 1.5,
   },
   appleBtn: {
-    backgroundColor: '#000',
-    borderColor: '#000',
+    backgroundColor: '#5c5b5b',
+    borderColor: '#5c5b5b',
   },
   googleBtn: {
     backgroundColor: colors.surface,

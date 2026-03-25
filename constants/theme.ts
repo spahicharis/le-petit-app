@@ -1,21 +1,21 @@
-/** Shared design tokens for LePetit.app */
+/** Shared design tokens for LePetit.app – warm dark palette (night-friendly) */
 
 export const colors = {
-  primary: '#F9A825',      // amber – warm, inviting
-  primaryDark: '#F57F17',
-  secondary: '#FF6B6B',    // coral – playful
-  accent: '#4FC3F7',       // sky blue – dreamy
-  background: '#FFF8F0',   // warm cream
-  surface: '#FFFFFF',
-  cardBg: '#FFFDF7',
-  text: '#2D2D2D',
-  textMuted: '#9E9E9E',
-  textLight: '#FFFFFF',
-  border: '#EEE8DC',
+  primary: '#FFA726',      // warm amber – pops against dark backgrounds
+  primaryDark: '#E65100',  // deep burnt orange
+  secondary: '#F06060',    // soft coral
+  accent: '#4DB6E8',       // muted sky blue
+  background: '#1E1A14',   // very dark warm brown – main canvas
+  surface: '#28231A',      // slightly lighter – cards & sheets
+  cardBg: '#312B1F',       // subtle card lift
+  text: '#EDE0C4',         // warm cream – easier on eyes than pure white
+  textMuted: '#7A6A54',    // warm brown-grey
+  textLight: '#FFFFFF',    // for text on coloured/gradient backgrounds
+  border: '#3D3424',       // dark warm border
   success: '#66BB6A',
-  tabBar: '#FFFFFF',
-  tabBarActive: '#F9A825',
-  tabBarInactive: '#BDBDBD',
+  tabBar: '#1E1A14',       // matches background
+  tabBarActive: '#FFA726', // amber stays
+  tabBarInactive: '#52422E', // warm muted inactive
 } as const;
 
 export const spacing = {
@@ -52,4 +52,3 @@ export const fontWeight = {
   bold: '700' as const,
   extrabold: '800' as const,
 } as const;
-

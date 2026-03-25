@@ -168,7 +168,7 @@ export function AudioPlayer({ story }: AudioPlayerProps) {
 
   return (
     <LinearGradient
-      colors={['#FFF3E0', '#FFF8F0', '#E3F2FD']}
+      colors={['#2A2318', '#252018', '#1E2220']}
       start={{ x: 0, y: 0 }}
       end={{ x: 1, y: 1 }}
       style={styles.container}>

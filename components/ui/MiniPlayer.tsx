@@ -99,7 +99,7 @@ export function MiniPlayer() {
       ]}
       pointerEvents={shouldShow ? 'box-none' : 'none'}>
       <LinearGradient
-        colors={['#FFFFFF', '#FFF8F0']}
+        colors={['#2C2518', '#28221A']}
         start={{ x: 0, y: 0 }}
         end={{ x: 1, y: 0 }}
         style={styles.container}>

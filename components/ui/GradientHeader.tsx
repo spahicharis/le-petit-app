@@ -13,21 +13,13 @@ import type { NativeStackHeaderProps } from '@react-navigation/native-stack';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { colors, fontSize, fontWeight, spacing } from '@/constants/theme';
 
-/** Gradient colours – warm amber → coral, matching the app palette */
+/** Gradient colours – dark warm amber header */
 export const HEADER_GRADIENT: [string, string, ...string[]] = [
-  '#aca29c',
-  'rgba(255,154,92,0.49)',
-  'rgba(255,154,92,0.49)',
-  // colors.background,
-  // colors.background,
-  // colors.background,
-  // 'transparent',
-  // 'transparent',
-  // 'transparent',
+  '#1E1208',
+  '#2E1A08',
+  '#362010',
 ];
 
-/** Bottom-fade colours – amber → transparent, for the soft dissolve beneath the header */
-const BOTTOM_FADE: [string, string] = ['rgba(249, 168, 37, 0.25)', 'transparent'];
 
 export function GradientHeader({ options, navigation, route }: NativeStackHeaderProps) {
   const router = useRouter();
@@ -96,9 +88,9 @@ const styles = StyleSheet.create({
     paddingBottom: spacing.md,
     paddingHorizontal: spacing.md,
     minHeight: 56,
-    shadowColor: '#F9A825',
+    shadowColor: '#000',
     shadowOffset: { width: 0, height: 3 },
-    shadowOpacity: 0.35,
+    shadowOpacity: 0.5,
     shadowRadius: 8,
     elevation: 6,
   },
