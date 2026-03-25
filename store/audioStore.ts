@@ -7,6 +7,7 @@
  */
 import { Audio, AVPlaybackStatus, InterruptionModeIOS, InterruptionModeAndroid } from 'expo-av';
 import { create } from 'zustand';
+import i18n from '@/constants/i18n';
 import type { Story } from '@/constants/data';
 
 // ─── singleton ────────────────────────────────────────────────────────────────
@@ -89,7 +90,7 @@ export const useAudioStore = create<AudioStore>((set, get) => {
       }
 
       if (!story.audioUrl) {
-        set({ ...RESET, currentStory: story, error: 'No audio available for this story.' });
+        set({ ...RESET, currentStory: story, error: i18n.t('audio.noAudio') });
         return;
       }
 
@@ -120,7 +121,7 @@ export const useAudioStore = create<AudioStore>((set, get) => {
         _sound = sound;
         set({ isLoaded: true, isLoading: false });
       } catch {
-        set({ isLoading: false, error: 'Could not load audio. Please check your connection.' });
+        set({ isLoading: false, error: i18n.t('audio.audioError') });
       }
     },
 

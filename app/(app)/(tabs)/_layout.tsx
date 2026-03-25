@@ -1,5 +1,6 @@
 import { Tabs } from 'expo-router';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
+import { useTranslation } from 'react-i18next';
 import { colors } from '@/constants/theme';
 
 export const unstable_settings = {
@@ -11,6 +12,8 @@ function TabIcon({ name, color }: { name: React.ComponentProps<typeof FontAwesom
 }
 
 export default function TabsLayout() {
+  const { t } = useTranslation();
+
   return (
     <Tabs
       screenOptions={{
@@ -29,28 +32,28 @@ export default function TabsLayout() {
       <Tabs.Screen
         name="tales"
         options={{
-          title: 'Home',
+          title: t('tabs.home'),
           tabBarIcon: ({ color }) => <TabIcon name="home" color={color} />,
         }}
       />
       <Tabs.Screen
         name="notifications"
         options={{
-          title: 'Notifications',
+          title: t('tabs.notifications'),
           tabBarIcon: ({ color }) => <TabIcon name="bell" color={color} />,
         }}
       />
       <Tabs.Screen
         name="search"
         options={{
-          title: 'Search',
+          title: t('tabs.search'),
           tabBarIcon: ({ color }) => <TabIcon name="search" color={color} />,
         }}
       />
       <Tabs.Screen
         name="favorites"
         options={{
-          title: 'Favourites',
+          title: t('tabs.favourites'),
           tabBarIcon: ({ color }) => <TabIcon name="heart" color={color} />,
         }}
       />

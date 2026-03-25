@@ -21,7 +21,8 @@
           "microphonePermission": "Allow LePetit to record audio."
         }
       ],
-      "expo-audio"
+      "expo-audio",
+      "expo-localization"
     ],
     "experiments": {
       "typedRoutes": true,

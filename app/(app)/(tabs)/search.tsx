@@ -10,12 +10,14 @@ import {
 } from 'react-native';
 import { useRouter } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { useTranslation } from 'react-i18next';
 import { stories } from '@/constants/data';
 import { colors, spacing, fontSize, fontWeight, radius } from '@/constants/theme';
 import type { Story } from '@/constants/data';
 
 export default function SearchTab() {
   const router = useRouter();
+  const { t } = useTranslation();
   const [query, setQuery] = useState('');
 
   const filtered = query.trim().length > 1
@@ -48,12 +50,12 @@ export default function SearchTab() {
   return (
     <SafeAreaView style={styles.container} edges={['top']}>
       <View style={styles.header}>
-        <Text style={styles.title}>Search</Text>
+        <Text style={styles.title}>{t('search.title')}</Text>
         <View style={styles.inputWrapper}>
           <Text style={styles.searchIcon}>🔍</Text>
           <TextInput
             style={styles.input}
-            placeholder="Search stories…"
+            placeholder={t('search.inputPlaceholder')}
             placeholderTextColor={colors.textMuted}
             value={query}
             onChangeText={setQuery}
@@ -75,13 +77,13 @@ export default function SearchTab() {
           renderItem={renderItem}
           contentContainerStyle={styles.list}
           ListEmptyComponent={
-            <Text style={styles.empty}>No stories found for &quot;{query}&quot;.</Text>
+            <Text style={styles.empty}>{t('search.noResults', { query })}</Text>
           }
         />
       ) : (
         <View style={styles.promptArea}>
           <Text style={styles.promptEmoji}>📚</Text>
-          <Text style={styles.prompt}>Type a story title or keyword to search.</Text>
+          <Text style={styles.prompt}>{t('search.prompt')}</Text>
         </View>
       )}
     </SafeAreaView>

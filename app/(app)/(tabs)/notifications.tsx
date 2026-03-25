@@ -1,17 +1,17 @@
 import React from 'react';
 import { Text, StyleSheet, ScrollView } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { useTranslation } from 'react-i18next';
 import { colors, spacing, fontSize, fontWeight } from '@/constants/theme';
 
 export default function NotificationsTab() {
+  const { t } = useTranslation();
   return (
     <SafeAreaView style={styles.container} edges={['top']}>
       <ScrollView contentContainerStyle={styles.content}>
-        <Text style={styles.title}>Notifications</Text>
-        <Text style={styles.empty}>🔔 No notifications yet.</Text>
-        <Text style={styles.hint}>
-          We will notify you when new stories are added or when your favourites are updated.
-        </Text>
+        <Text style={styles.title}>{t('notifications.title')}</Text>
+        <Text style={styles.empty}>{t('notifications.empty')}</Text>
+        <Text style={styles.hint}>{t('notifications.hint')}</Text>
       </ScrollView>
     </SafeAreaView>
   );
@@ -39,4 +39,3 @@ const styles = StyleSheet.create({
     lineHeight: 22,
   },
 });
-

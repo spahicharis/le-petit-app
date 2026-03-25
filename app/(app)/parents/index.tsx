@@ -10,7 +10,7 @@ import {
   UIManager,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { faqItems } from '@/constants/data';
+import { useTranslation } from 'react-i18next';
 import { colors, spacing, fontSize, fontWeight, radius } from '@/constants/theme';
 
 if (Platform.OS === 'android') {
@@ -37,17 +37,23 @@ function FaqItem({ question, answer }: { question: string; answer: string }) {
 }
 
 export default function ParentsScreen() {
+  const { t } = useTranslation();
+  // FAQ items come from translations so both EN and BS are covered.
+  const faq = t('parents.faq', { returnObjects: true }) as {
+    id: string;
+    question: string;
+    answer: string;
+  }[];
+
   return (
     <SafeAreaView style={styles.container} edges={['bottom']}>
       <ScrollView contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>
         <View style={styles.intro}>
           <Text style={styles.introEmoji}>👨‍👩‍👧</Text>
           {/*<Text style={styles.introTitle}>For Parents</Text>*/}
-          <Text style={styles.introSub}>
-            Answers to common questions about LePetit.app and how it works.
-          </Text>
+          <Text style={styles.introSub}>{t('parents.subtitle')}</Text>
         </View>
-        {faqItems.map((item) => (
+        {faq.map((item) => (
           <FaqItem key={item.id} question={item.question} answer={item.answer} />
         ))}
       </ScrollView>
@@ -104,4 +110,3 @@ const styles = StyleSheet.create({
     lineHeight: 22,
   },
 });
-

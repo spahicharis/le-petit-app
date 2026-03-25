@@ -1,4 +1,5 @@
 import '../global.css';
+import '@/constants/i18n'; // initialise i18n before any screen renders
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { Stack } from 'expo-router';
 

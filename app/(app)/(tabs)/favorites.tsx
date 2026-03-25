@@ -2,12 +2,14 @@ import React from 'react';
 import { View, Text, StyleSheet, FlatList, Image, TouchableOpacity } from 'react-native';
 import { useRouter } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { useTranslation } from 'react-i18next';
 import { stories } from '@/constants/data';
 import { colors, spacing, fontSize, fontWeight, radius } from '@/constants/theme';
 import type { Story } from '@/constants/data';
 
 export default function FavouritesTab() {
   const router = useRouter();
+  const { t } = useTranslation();
   const favourites = stories.filter((s) => s.isFavorite);
 
   const renderItem = ({ item }: { item: Story }) => (
@@ -31,16 +33,12 @@ export default function FavouritesTab() {
 
   return (
     <SafeAreaView style={styles.container} edges={['top']}>
-      <View style={styles.header}>
-        <Text style={styles.title}>Favourites</Text>
-      </View>
+
       {favourites.length === 0 ? (
         <View style={styles.emptyArea}>
           <Text style={styles.emptyEmoji}>🤍</Text>
-          <Text style={styles.emptyText}>No favourites yet.</Text>
-          <Text style={styles.emptyHint}>
-            Tap the heart icon on any story to save it here.
-          </Text>
+          <Text style={styles.emptyText}>{t('favourites.empty')}</Text>
+          <Text style={styles.emptyHint}>{t('favourites.hint')}</Text>
         </View>
       ) : (
         <FlatList

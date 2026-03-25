@@ -9,6 +9,7 @@ import {
 } from 'react-native';
 import { useLocalSearchParams, useRouter, useNavigation } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { useTranslation } from 'react-i18next';
 import { getSubcategory, getStoriesBySubcategory } from '@/constants/data';
 import { colors, spacing, fontSize, fontWeight, radius } from '@/constants/theme';
 import type { Story } from '@/constants/data';
@@ -17,6 +18,7 @@ export default function SubcategoryScreen() {
   const router = useRouter();
   const navigation = useNavigation();
   const { subcategory } = useLocalSearchParams<{ subcategory: string }>();
+  const { t } = useTranslation();
 
   const sub = getSubcategory(subcategory ?? '');
   const storyList = getStoriesBySubcategory(subcategory ?? '');
@@ -69,7 +71,7 @@ export default function SubcategoryScreen() {
           ) : null
         }
         ListEmptyComponent={
-          <Text style={styles.empty}>No stories found in this category.</Text>
+          <Text style={styles.empty}>{t('tales.noStories')}</Text>
         }
       />
     </SafeAreaView>

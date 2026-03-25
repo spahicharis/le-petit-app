@@ -9,8 +9,10 @@ import {
 } from 'react-native';
 import { useRouter, type Href } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { useTranslation } from 'react-i18next';
 import { useAuthStore } from '@/store/authStore';
 import { colors, spacing, fontSize, fontWeight, radius } from '@/constants/theme';
+import { LanguageSwitcher } from '@/components/ui/LanguageSwitcher';
 
 interface SectionCardProps {
   emoji: string;
@@ -38,6 +40,7 @@ function SectionCard({ emoji, title, description, accentColor, onPress }: Sectio
 export default function HomeTab() {
   const router = useRouter();
   const { userName, isLoggedIn, logout } = useAuthStore();
+  const { t } = useTranslation();
 
   return (
     <SafeAreaView style={styles.safeArea} edges={['top']}>
@@ -46,40 +49,42 @@ export default function HomeTab() {
 
         {/* Header */}
         <View style={styles.header}>
-          <View>
+          <View style={styles.headerLeft}>
             <Text style={styles.greeting}>
-              {isLoggedIn ? `Hello, ${userName ?? 'Friend'}! 👋` : 'Welcome! 👋'}
+              {isLoggedIn ? t('home.greeting', { name: userName ?? 'Friend' }) : t('home.guestGreeting')}
             </Text>
             <Text style={styles.appName}>LePetit.app</Text>
           </View>
-          {isLoggedIn && (
-            <TouchableOpacity style={styles.logoutBtn} onPress={logout}>
-              <Text style={styles.logoutText}>Sign out</Text>
-            </TouchableOpacity>
-          )}
+          <View style={styles.headerRight}>
+            <LanguageSwitcher />
+            {isLoggedIn && (
+              <TouchableOpacity style={styles.logoutBtn} onPress={logout}>
+                <Text style={styles.logoutText}>{t('home.signOut')}</Text>
+              </TouchableOpacity>
+            )}
+          </View>
         </View>
 
-        <Text style={styles.sectionLabel}>Explore</Text>
+        <Text style={styles.sectionLabel}>{t('home.explore')}</Text>
 
-        {/* Main section cards */}
         <SectionCard
           emoji="📚"
-          title="Tales"
-          description="Explore our library of classic stories and animal adventures."
+          title={t('home.talesTitle')}
+          description={t('home.talesDesc')}
           accentColor={colors.primary}
           onPress={() => router.push('/(app)/tales/tales' as Href)}
         />
         <SectionCard
           emoji="👨‍👩‍👧"
-          title="For Parents"
-          description="Answers to common questions about the app and its content."
+          title={t('home.parentsTitle')}
+          description={t('home.parentsDesc')}
           accentColor={colors.secondary}
           onPress={() => router.push('/(app)/parents' as Href)}
         />
         <SectionCard
           emoji="🗣️"
-          title="My Logoped"
-          description="Personalised speech and language exercises — coming soon."
+          title={t('home.logopedTitle')}
+          description={t('home.logopedDesc')}
           accentColor={colors.accent}
           onPress={() => router.push('/(app)/my-logoped' as Href)}
         />
@@ -106,6 +111,13 @@ const styles = StyleSheet.create({
     alignItems: 'flex-start',
     paddingTop: spacing.lg,
     paddingBottom: spacing.xl,
+  },
+  headerLeft: {
+    flex: 1,
+  },
+  headerRight: {
+    alignItems: 'flex-end',
+    gap: spacing.sm,
   },
   greeting: {
     fontSize: fontSize.md,

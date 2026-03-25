@@ -8,12 +8,14 @@ import {
 } from 'react-native';
 import { useRouter } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { useTranslation } from 'react-i18next';
 import { useAuthStore } from '@/store/authStore';
 import { colors, spacing, fontSize, fontWeight, radius } from '@/constants/theme';
 
 export default function LoginScreen() {
   const router = useRouter();
   const { loginWithProvider } = useAuthStore();
+  const { t } = useTranslation();
 
   const handleProvider = (provider: 'apple' | 'google') => {
     loginWithProvider(provider);
@@ -25,14 +27,12 @@ export default function LoginScreen() {
 
       {/* Back */}
       <TouchableOpacity style={styles.backBtn} onPress={() => router.back()}>
-        <Text style={styles.backText}>← Back</Text>
+        <Text style={styles.backText}>{t('login.back')}</Text>
       </TouchableOpacity>
 
       <View style={styles.content}>
-        <Text style={styles.title}>Sign In</Text>
-        <Text style={styles.subtitle}>
-          Save your favourites and unlock the full story library.
-        </Text>
+        <Text style={styles.title}>{t('login.title')}</Text>
+        <Text style={styles.subtitle}>{t('login.subtitle')}</Text>
 
         {/* Apple Sign-In */}
         <TouchableOpacity
@@ -41,7 +41,7 @@ export default function LoginScreen() {
           activeOpacity={0.85}>
           <Text style={styles.providerIcon}></Text>
           <Text style={[styles.providerText, styles.appleText]}>
-            Continue with Apple
+            {t('login.withApple')}
           </Text>
         </TouchableOpacity>
 
@@ -52,19 +52,17 @@ export default function LoginScreen() {
           activeOpacity={0.85}>
           <Text style={styles.providerIcon}>G</Text>
           <Text style={[styles.providerText, styles.googleText]}>
-            Continue with Google
+            {t('login.withGoogle')}
           </Text>
         </TouchableOpacity>
 
         <View style={styles.divider}>
           <View style={styles.dividerLine} />
-          <Text style={styles.dividerText}>coming soon</Text>
+          <Text style={styles.dividerText}>{t('login.comingSoon')}</Text>
           <View style={styles.dividerLine} />
         </View>
 
-        <Text style={styles.note}>
-          Real authentication will be available in a future update. For now, sign-in flows are placeholders.
-        </Text>
+        <Text style={styles.note}>{t('login.placeholder')}</Text>
       </View>
     </SafeAreaView>
   );
@@ -158,4 +156,3 @@ const styles = StyleSheet.create({
     lineHeight: 18,
   },
 });
-

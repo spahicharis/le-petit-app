@@ -21,6 +21,7 @@ import { usePathname, useRouter } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { LinearGradient } from 'expo-linear-gradient';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
+import { useTranslation } from 'react-i18next';
 import { useAudioStore } from '@/store/audioStore';
 import { colors, fontSize, fontWeight, radius, spacing } from '@/constants/theme';
 
@@ -32,6 +33,7 @@ export function MiniPlayer() {
   const router = useRouter();
   const pathname = usePathname();
   const insets = useSafeAreaInsets();
+  const { t } = useTranslation();
 
   const { currentStory, isPlaying, isLoading, positionMs, durationMs, togglePlayPause, stop } =
     useAudioStore();
@@ -131,7 +133,7 @@ export function MiniPlayer() {
                 🎙 {currentStory.narrator}
               </Text>
             ) : (
-              <Text style={styles.narrator}>Tap to open</Text>
+              <Text style={styles.narrator}>{t('audio.tapToOpen')}</Text>
             )}
           </View>
 

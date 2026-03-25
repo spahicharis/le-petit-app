@@ -11,6 +11,7 @@ import {
 } from 'react-native';
 import { useLocalSearchParams, useNavigation } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { useTranslation } from 'react-i18next';
 import { getStoryById } from '@/constants/data';
 import { colors, spacing, fontSize, fontWeight, radius } from '@/constants/theme';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
@@ -20,6 +21,7 @@ export default function StoryDetailScreen() {
   const navigation = useNavigation();
   const { storyId } = useLocalSearchParams<{ storyId: string }>();
   const story = getStoryById(storyId ?? '');
+  const { t } = useTranslation();
 
   const [isFav, setIsFav] = useState(story?.isFavorite ?? false);
 
@@ -32,14 +34,14 @@ export default function StoryDetailScreen() {
   const handleShare = async () => {
     if (!story) return;
     try {
-      await Share.share({ message: `Check out "${story.title}" on LePetit.app!` });
+      await Share.share({ message: t('story.shareMessage', { title: story.title }) });
     } catch {
       // share cancelled
     }
   };
 
   const handleDownload = () => {
-    Alert.alert('Download', 'Offline downloads will be available in a future update.');
+    Alert.alert(t('story.download'), t('story.downloadSoon'));
   };
 
   if (!story) {
@@ -47,7 +49,7 @@ export default function StoryDetailScreen() {
       <SafeAreaView style={styles.container}>
         <View style={styles.notFound}>
           <Text style={styles.notFoundEmoji}>📭</Text>
-          <Text style={styles.notFoundText}>Story not found.</Text>
+          <Text style={styles.notFoundText}>{t('story.notFound')}</Text>
         </View>
       </SafeAreaView>
     );
@@ -81,19 +83,19 @@ export default function StoryDetailScreen() {
           <View style={styles.actionsRow}>
             <ActionButton
               icon={isFav ? 'heart' : 'heart-o'}
-              label="Favourite"
+              label={t('story.favourite')}
               color={isFav ? colors.secondary : colors.textMuted}
               onPress={() => setIsFav((v) => !v)}
             />
             <ActionButton
               icon="share-alt"
-              label="Share"
+              label={t('story.share')}
               color={colors.textMuted}
               onPress={handleShare}
             />
             <ActionButton
               icon="download"
-              label="Download"
+              label={t('story.download')}
               color={colors.textMuted}
               onPress={handleDownload}
             />
@@ -105,7 +107,7 @@ export default function StoryDetailScreen() {
               {story.originalAuthor && (
                 <CreatorChip
                   name={story.originalAuthor}
-                  role="Author"
+                  role={t('story.author')}
                   color={colors.primary}
                 />
               )}
@@ -115,7 +117,7 @@ export default function StoryDetailScreen() {
               {story.narrator && (
                 <CreatorChip
                   name={story.narrator}
-                  role="Narrator"
+                  role={t('story.narrator')}
                   color={colors.accent}
                 />
               )}
@@ -124,20 +126,20 @@ export default function StoryDetailScreen() {
 
           {/* Short description */}
           <View style={styles.section}>
-            <Text style={styles.sectionLabel}>About this story</Text>
+            <Text style={styles.sectionLabel}>{t('story.aboutThisStory')}</Text>
             <Text style={styles.shortDesc}>{story.shortDescription}</Text>
           </View>
 
           {/* Story */}
           <View style={styles.section}>
-            <Text style={styles.sectionLabel}>The Story</Text>
+            <Text style={styles.sectionLabel}>{t('story.theStory')}</Text>
             <Text style={styles.bodyText}>{story.storyDescription}</Text>
           </View>
 
           {/* Conclusion */}
           {story.conclusion.length > 0 && (
             <View style={[styles.section, styles.conclusionBox]}>
-              <Text style={styles.conclusionLabel}>✨ Moral of the story</Text>
+              <Text style={styles.conclusionLabel}>{t('story.moral')}</Text>
               <Text style={styles.conclusionText}>{story.conclusion}</Text>
             </View>
           )}
@@ -145,7 +147,7 @@ export default function StoryDetailScreen() {
           {/* Questions */}
           {story.questions.length > 0 && (
             <View style={styles.section}>
-              <Text style={styles.sectionLabel}>Questions for kids 💬</Text>
+              <Text style={styles.sectionLabel}>{t('story.questionsForKids')}</Text>
               {story.questions.map((q, i) => (
                 <View key={i} style={styles.questionRow}>
                   <Text style={styles.questionNum}>{i + 1}.</Text>
@@ -165,10 +167,9 @@ export default function StoryDetailScreen() {
           {/* Video placeholder */}
           {story.videoUrl && (
             <View style={styles.section}>
-              <Text style={styles.sectionLabel}>Media</Text>
               <View style={styles.mediaChip}>
                 <FontAwesome name="play-circle" size={18} color={colors.secondary} />
-                <Text style={styles.mediaText}>Video available</Text>
+                <Text style={styles.mediaText}>{t('story.videoAvailable')}</Text>
               </View>
             </View>
           )}

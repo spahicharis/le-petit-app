@@ -9,12 +9,14 @@ import {
 } from 'react-native';
 import { useRouter } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { useTranslation } from 'react-i18next';
 import { storySubcategories } from '@/constants/data';
 import { colors, spacing, fontSize, fontWeight, radius } from '@/constants/theme';
 import type { StorySubcategory } from '@/constants/data';
 
 export default function TalesLandingScreen() {
   const router = useRouter();
+  const { t } = useTranslation();
 
   const renderItem = ({ item }: { item: StorySubcategory }) => (
     <TouchableOpacity
@@ -42,10 +44,8 @@ export default function TalesLandingScreen() {
         contentContainerStyle={styles.list}
         ListHeaderComponent={
           <View style={styles.listHeader}>
-            <Text style={styles.listHeaderTitle}>Choose a category</Text>
-            <Text style={styles.listHeaderSub}>
-              Pick a story collection below and start reading!
-            </Text>
+            <Text style={styles.listHeaderTitle}>{t('tales.chooseCategory')}</Text>
+            <Text style={styles.listHeaderSub}>{t('tales.startReading')}</Text>
           </View>
         }
       />

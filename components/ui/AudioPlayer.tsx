@@ -16,6 +16,7 @@ import {
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
+import { useTranslation } from 'react-i18next';
 import { colors, fontSize, fontWeight, radius, spacing } from '@/constants/theme';
 import { useAudioStore } from '@/store/audioStore';
 import type { Story } from '@/constants/data';
@@ -38,6 +39,7 @@ interface AudioPlayerProps {
 export function AudioPlayer({ story }: AudioPlayerProps) {
   const { currentStory, isLoaded, isLoading, isPlaying, positionMs, durationMs, error, play, togglePlayPause, seek } =
     useAudioStore();
+  const { t } = useTranslation();
 
   /** True only when THIS story is the active one in the global store. */
   const isThisStory = currentStory?.id === story.id;
@@ -180,12 +182,12 @@ export function AudioPlayer({ story }: AudioPlayerProps) {
 
       {/* Header */}
       <View style={styles.headerRow}>
-        <Text style={styles.listenLabel}>🎧 Listen to the story</Text>
+        <Text style={styles.listenLabel}>{t('audio.listenToStory')}</Text>
       </View>
 
       {(story.narrator || story.title) ? (
         <Text style={styles.narratorText} numberOfLines={1}>
-          {story.narrator ? `Narrated by ${story.narrator}` : story.title}
+          {story.narrator ? t('audio.narratedBy', { name: story.narrator }) : story.title}
         </Text>
       ) : null}
 
@@ -239,7 +241,7 @@ export function AudioPlayer({ story }: AudioPlayerProps) {
       </View>
 
       {!effectiveIsLoaded && !effectiveIsLoading && !effectiveError && (
-        <Text style={styles.hintText}>Tap ▶ to start listening</Text>
+        <Text style={styles.hintText}>{t('audio.tapToListen')}</Text>
       )}
     </LinearGradient>
   );

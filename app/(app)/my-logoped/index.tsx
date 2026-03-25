@@ -1,19 +1,18 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { useTranslation } from 'react-i18next';
 import { colors, spacing, fontSize, fontWeight } from '@/constants/theme';
 
 export default function MyLogopedScreen() {
+  const { t } = useTranslation();
   return (
     <SafeAreaView style={styles.container} edges={['bottom']}>
       <View style={styles.content}>
         <Text style={styles.emoji}>🗣️</Text>
-        <Text style={styles.title}>My Logoped</Text>
-        <Text style={styles.subtitle}>Coming soon</Text>
-        <Text style={styles.body}>
-          Personalised speech and language exercises, progress tracking, and guidance
-          from speech therapists will be available in a future update.
-        </Text>
+        <Text style={styles.title}>{t('myLogoped.title')}</Text>
+        <Text style={styles.subtitle}>{t('myLogoped.comingSoon')}</Text>
+        <Text style={styles.body}>{t('myLogoped.body')}</Text>
       </View>
     </SafeAreaView>
   );
@@ -47,4 +46,3 @@ const styles = StyleSheet.create({
     maxWidth: 320,
   },
 });
-

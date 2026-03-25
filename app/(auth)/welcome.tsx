@@ -8,24 +8,27 @@ import {
 } from 'react-native';
 import { useRouter, type Href } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { useTranslation } from 'react-i18next';
 import { useAuthStore } from '@/store/authStore';
 import { colors, spacing, fontSize, fontWeight, radius } from '@/constants/theme';
+import { LanguageSwitcher } from '@/components/ui/LanguageSwitcher';
 
 export default function WelcomeScreen() {
   const router = useRouter();
   const { continueAsGuest } = useAuthStore();
+  const { t } = useTranslation();
 
-  const handleContinueAsGuest = () => {
-    continueAsGuest();
-  };
-
-  const handleSignIn = () => {
-    router.push('/(auth)/login' as Href);
-  };
+  const handleContinueAsGuest = () => { continueAsGuest(); };
+  const handleSignIn = () => { router.push('/(auth)/login' as Href); };
 
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar barStyle="dark-content" backgroundColor={colors.background} />
+
+      {/* Language switcher – top right */}
+      <View style={styles.topBar}>
+        <LanguageSwitcher />
+      </View>
 
       {/* Hero area */}
       <View style={styles.hero}>
@@ -33,29 +36,27 @@ export default function WelcomeScreen() {
           <Text style={styles.logoEmoji}>📖</Text>
         </View>
         <Text style={styles.appName}>LePetit.app</Text>
-        <Text style={styles.tagline}>Magical stories for{'\n'}little dreamers ✨</Text>
+        <Text style={styles.tagline}>{t('welcome.tagline')}</Text>
       </View>
 
       {/* Features */}
       <View style={styles.features}>
-        <FeatureRow icon="🦁" text="Hundreds of classic tales" />
-        <FeatureRow icon="🌙" text="Soothing bedtime stories" />
-        <FeatureRow icon="🎧" text="Audio narration available" />
+        <FeatureRow icon="🦁" text={t('welcome.feature1')} />
+        <FeatureRow icon="🌙" text={t('welcome.feature2')} />
+        <FeatureRow icon="🎧" text={t('welcome.feature3')} />
       </View>
 
       {/* Actions */}
       <View style={styles.actions}>
         <TouchableOpacity style={styles.primaryBtn} onPress={handleContinueAsGuest} activeOpacity={0.85}>
-          <Text style={styles.primaryBtnText}>Continue without login</Text>
+          <Text style={styles.primaryBtnText}>{t('welcome.continueWithoutLogin')}</Text>
         </TouchableOpacity>
 
         <TouchableOpacity style={styles.secondaryBtn} onPress={handleSignIn} activeOpacity={0.85}>
-          <Text style={styles.secondaryBtnText}>Sign In</Text>
+          <Text style={styles.secondaryBtnText}>{t('welcome.signIn')}</Text>
         </TouchableOpacity>
 
-        <Text style={styles.hint}>
-          Sign in to save favourites and access the full library.
-        </Text>
+        <Text style={styles.hint}>{t('welcome.signInHint')}</Text>
       </View>
     </SafeAreaView>
   );
@@ -75,6 +76,10 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: colors.background,
     paddingHorizontal: spacing.lg,
+  },
+  topBar: {
+    alignItems: 'flex-end',
+    paddingTop: spacing.sm,
   },
   hero: {
     flex: 1,
