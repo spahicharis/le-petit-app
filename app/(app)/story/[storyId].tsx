@@ -99,6 +99,29 @@ export default function StoryDetailScreen() {
             />
           </View>
 
+          {/* Author & Narrator row */}
+          {(story.originalAuthor || story.narrator) && (
+            <View style={styles.creatorsRow}>
+              {story.originalAuthor && (
+                <CreatorChip
+                  name={story.originalAuthor}
+                  role="Author"
+                  color={colors.primary}
+                />
+              )}
+              {story.originalAuthor && story.narrator && (
+                <View style={styles.creatorDivider} />
+              )}
+              {story.narrator && (
+                <CreatorChip
+                  name={story.narrator}
+                  role="Narrator"
+                  color={colors.accent}
+                />
+              )}
+            </View>
+          )}
+
           {/* Short description */}
           <View style={styles.section}>
             <Text style={styles.sectionLabel}>About this story</Text>
@@ -174,6 +197,31 @@ function ActionButton({
   );
 }
 
+/** Extracts up to two initials from a name string. */
+function initials(name: string): string {
+  return name
+    .split(' ')
+    .slice(0, 2)
+    .map((w) => w[0]?.toUpperCase() ?? '')
+    .join('');
+}
+
+function CreatorChip({ name, role, color }: { name: string; role: string; color: string }) {
+  return (
+    <View style={styles.creatorChip}>
+      {/* Avatar circle */}
+      <View style={[styles.avatar, { backgroundColor: color + '22', borderColor: color + '55' }]}>
+        <Text style={[styles.avatarInitials, { color }]}>{initials(name)}</Text>
+      </View>
+      {/* Text */}
+      <View style={styles.creatorInfo}>
+        <Text style={styles.creatorRole}>{role}</Text>
+        <Text style={styles.creatorName} numberOfLines={1}>{name}</Text>
+      </View>
+    </View>
+  );
+}
+
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: colors.background },
   notFound: {
@@ -222,10 +270,62 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: colors.border,
     paddingVertical: spacing.md,
-    marginBottom: spacing.xl,
+    marginBottom: spacing.md,
   },
   actionBtn: { alignItems: 'center', gap: spacing.xs },
   actionLabel: { fontSize: fontSize.xs, fontWeight: fontWeight.semibold },
+  // ── creators ──
+  creatorsRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: colors.surface,
+    borderRadius: radius.md,
+    borderWidth: 1,
+    borderColor: colors.border,
+    paddingVertical: spacing.sm,
+    paddingHorizontal: spacing.md,
+    marginBottom: spacing.xl,
+  },
+  creatorChip: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: spacing.sm,
+  },
+  creatorDivider: {
+    width: 1,
+    height: 32,
+    backgroundColor: colors.border,
+    marginHorizontal: spacing.sm,
+  },
+  avatar: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    borderWidth: 1.5,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  avatarInitials: {
+    fontSize: fontSize.sm,
+    fontWeight: fontWeight.bold,
+  },
+  creatorInfo: {
+    flex: 1,
+    gap: 1,
+  },
+  creatorRole: {
+    fontSize: fontSize.xs,
+    color: colors.textMuted,
+    textTransform: 'uppercase',
+    letterSpacing: 0.6,
+    fontWeight: fontWeight.semibold,
+  },
+  creatorName: {
+    fontSize: fontSize.sm,
+    fontWeight: fontWeight.bold,
+    color: colors.text,
+  },
   section: { marginBottom: spacing.xl },
   sectionLabel: {
     fontSize: fontSize.sm,
