@@ -167,6 +167,7 @@ const en = {
     signIn: 'Sign In',
     signInSubtitle: 'Save favourites & unlock all stories',
     signOut: 'Sign Out',
+    notificationsSubtitle: 'New stories and updates',
     subscription: 'Subscription',
     subscriptionBadgeFree: 'Free',
     subscriptionBadgePremium: 'Premium',

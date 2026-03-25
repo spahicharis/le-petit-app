@@ -99,6 +99,19 @@ export default function MoreTab() {
   // ── sections ─────────────────────────────────────────────────────────────
 
   const sections: MenuSection[] = [
+    // Notifications
+    {
+      title: t('tabs.notifications'),
+      items: [
+        {
+          icon: 'bell',
+          iconColor: colors.accent,
+          label: t('tabs.notifications'),
+          subtitle: t('more.notificationsSubtitle'),
+          onPress: () => router.push('/notifications' as Href),
+        },
+      ],
+    },
     // Account — sign-in for guests, sign-out for authenticated users
     {
       title: t('more.sectionAccount'),

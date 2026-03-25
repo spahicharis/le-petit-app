@@ -39,8 +39,7 @@ export default function TabsLayout() {
       <Tabs.Screen
         name="notifications"
         options={{
-          title: t('tabs.notifications'),
-          tabBarIcon: ({ color }) => <TabIcon name="bell" color={color} />,
+          href: null, // hidden from tab bar; accessible from More menu
         }}
       />
       <Tabs.Screen

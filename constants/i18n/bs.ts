@@ -166,6 +166,7 @@ const bs: Translation = {
     signIn: 'Prijavi se',
     signInSubtitle: 'Sačuvajte omiljene i otključajte sve priče',
     signOut: 'Odjavi se',
+    notificationsSubtitle: 'Nove priče i ažuriranja',
     subscription: 'Pretplata',
     subscriptionBadgeFree: 'Besplatno',
     subscriptionBadgePremium: 'Premium',

@@ -57,11 +57,6 @@ export default function HomeTab() {
           </View>
           <View style={styles.headerRight}>
             <LanguageSwitcher />
-            {isLoggedIn && (
-              <TouchableOpacity style={styles.logoutBtn} onPress={logout}>
-                <Text style={styles.logoutText}>{t('home.signOut')}</Text>
-              </TouchableOpacity>
-            )}
           </View>
         </View>
 
